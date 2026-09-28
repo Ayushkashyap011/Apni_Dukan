@@ -42,13 +42,17 @@ class ProductViewSet(viewsets.ModelViewSet):
         if brand_slug:
             queryset = queryset.filter(brand__slug=brand_slug)
 
-        # Price range filter
+        # Price range filter against effective price
         min_price = self.request.query_params.get('min_price')
         max_price = self.request.query_params.get('max_price')
         if min_price:
-            queryset = queryset.filter(price__gte=min_price)
+            queryset = queryset.filter(
+                Q(discount_price__gte=min_price) | (Q(discount_price__isnull=True) & Q(price__gte=min_price))
+            )
         if max_price:
-            queryset = queryset.filter(price__lte=max_price)
+            queryset = queryset.filter(
+                Q(discount_price__lte=max_price) | (Q(discount_price__isnull=True) & Q(price__lte=max_price))
+            )
 
         # Featured filter
         featured = self.request.query_params.get('featured')

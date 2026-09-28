@@ -91,7 +91,7 @@ export const HomePage: React.FC = () => {
             className="group relative h-64 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition"
           >
             <img
-              src="https://images.unsplash.com/photo-1542272604-780c36856842?w=600"
+              src="https://i.pinimg.com/736x/48/c0/f1/48c0f1c942155b5919908417b230ec60.jpg"
               alt="Denim Jeans"
               className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
             />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingBag, Heart, User, Search, Menu, X, LogOut, ShieldCheck, Package } from 'lucide-react';
+import { ShoppingBag, Heart, User, Search, Menu, X, LogOut, ShieldCheck, Package, ChevronDown } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useCartStore } from '../store/cartStore';
 import { useWishlistStore } from '../store/wishlistStore';
@@ -57,19 +57,93 @@ export const Navbar: React.FC = () => {
             </Link>
 
             {/* Desktop Nav Links */}
-            <nav className="hidden md:flex space-x-6 text-sm font-semibold text-slate-700">
+            <nav className="hidden md:flex items-center space-x-6 text-sm font-semibold text-slate-700">
               <Link to="/" className={`hover:text-brand-600 transition ${location.pathname === '/' ? 'text-brand-600 font-bold' : ''}`}>
                 Home
               </Link>
-              <Link to="/shop" className={`hover:text-brand-600 transition ${location.pathname === '/shop' ? 'text-brand-600 font-bold' : ''}`}>
+              <Link to="/shop" className={`hover:text-brand-600 transition ${location.pathname === '/shop' && !location.search ? 'text-brand-600 font-bold' : ''}`}>
                 Shop Catalog
               </Link>
-              <Link to="/shop?category=clothing" className="hover:text-brand-600 transition">
-                Clothing
-              </Link>
-              <Link to="/shop?category=accessories" className="hover:text-brand-600 transition">
-                Accessories
-              </Link>
+
+              {/* Categories Hover Menu */}
+              <div className="relative group py-4">
+                <button className="flex items-center space-x-1.5 hover:text-brand-600 transition focus:outline-none font-semibold text-slate-700">
+                  <span>Categories</span>
+                  <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-brand-600 group-hover:rotate-180 transition-transform duration-300" />
+                </button>
+
+                {/* Dropdown Menu Panel */}
+                <div className="absolute left-0 top-full hidden group-hover:block w-72 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-100 p-3 z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 px-3 py-1 mb-1">
+                    Explore Categories
+                  </div>
+
+                  <Link
+                    to="/shop?category=clothing"
+                    className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-brand-50 hover:text-brand-600 transition group/item"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-base group-hover/item:scale-110 transition">
+                      👕
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover/item:text-brand-600">Clothing</div>
+                      <div className="text-[10px] text-slate-400">T-Shirts, Jeans, Jackets & Kurtas (8 items)</div>
+                    </div>
+                  </Link>
+
+                  <Link
+                    to="/shop?category=watches"
+                    className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-brand-50 hover:text-brand-600 transition group/item"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-base group-hover/item:scale-110 transition">
+                      ⌚
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover/item:text-brand-600">Watches</div>
+                      <div className="text-[10px] text-slate-400">Chronographs, Smartwatches & Minimalist (5 items)</div>
+                    </div>
+                  </Link>
+
+                  <Link
+                    to="/shop?category=accessories"
+                    className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-brand-50 hover:text-brand-600 transition group/item"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-base group-hover/item:scale-110 transition">
+                      🎒
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover/item:text-brand-600">Accessories & Wallets</div>
+                      <div className="text-[10px] text-slate-400">Leather Wallets, Belts & Backpacks (5 items)</div>
+                    </div>
+                  </Link>
+
+                  <Link
+                    to="/shop?category=footwear"
+                    className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-brand-50 hover:text-brand-600 transition group/item"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-base group-hover/item:scale-110 transition">
+                      👟
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover/item:text-brand-600">Footwear</div>
+                      <div className="text-[10px] text-slate-400">Sneakers, Oxfords & Loafers (5 items)</div>
+                    </div>
+                  </Link>
+
+                  <Link
+                    to="/shop?category=eyewear"
+                    className="flex items-center space-x-3 px-3 py-2.5 rounded-xl hover:bg-brand-50 hover:text-brand-600 transition group/item"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-base group-hover/item:scale-110 transition">
+                      🕶️
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 group-hover/item:text-brand-600">Eyewear & Sunglasses</div>
+                      <div className="text-[10px] text-slate-400">Aviators, Wayfarers & Sport Shield (5 items)</div>
+                    </div>
+                  </Link>
+                </div>
+              </div>
             </nav>
           </div>
 

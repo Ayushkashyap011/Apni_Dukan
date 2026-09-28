@@ -17,7 +17,7 @@ export const ShopPage: React.FC = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [minPrice, setMinPrice] = useState<number | undefined>(undefined);
-  const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
+  const [maxPrice, setMaxPrice] = useState<number>(10000);
   const [sortBy, setSortBy] = useState<'price_low' | 'price_high' | 'newest' | 'rating'>('newest');
   const [page, setPage] = useState(1);
 
@@ -31,7 +31,7 @@ export const ShopPage: React.FC = () => {
     size: selectedSize || undefined,
     color: selectedColor || undefined,
     min_price: minPrice,
-    max_price: maxPrice,
+    max_price: maxPrice < 10000 ? maxPrice : undefined,
     search: searchQuery || undefined,
     sort_by: sortBy,
     page,
@@ -59,7 +59,7 @@ export const ShopPage: React.FC = () => {
     setSelectedSize('');
     setSelectedColor('');
     setMinPrice(undefined);
-    setMaxPrice(undefined);
+    setMaxPrice(10000);
     setSortBy('newest');
     setSearchParams({});
   };
@@ -180,13 +180,13 @@ export const ShopPage: React.FC = () => {
               min="500"
               max="10000"
               step="500"
-              value={maxPrice || 10000}
+              value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full accent-brand-600"
             />
             <div className="flex justify-between text-xs text-slate-500 font-semibold mt-1">
               <span>₹500</span>
-              <span>₹{maxPrice || 10000}</span>
+              <span>₹{maxPrice}</span>
             </div>
           </div>
         </aside>

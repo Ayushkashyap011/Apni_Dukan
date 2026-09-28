@@ -52,6 +52,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             src={imageSrc}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800';
+            }}
           />
         </Link>
 
