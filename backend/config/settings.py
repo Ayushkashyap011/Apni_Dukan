@@ -14,7 +14,18 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-apni-dukan-production-grade-secret-key-change-in-prod')
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
+
+default_hosts = [
+    'apni-dukan-backend-ee7i.onrender.com',
+    'localhost',
+    '127.0.0.1',
+    '0.0.0.0',
+]
+env_allowed_hosts = os.getenv('ALLOWED_HOSTS')
+if env_allowed_hosts and env_allowed_hosts.strip() != '*':
+    ALLOWED_HOSTS = [h.strip() for h in env_allowed_hosts.split(',') if h.strip()]
+else:
+    ALLOWED_HOSTS = default_hosts
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -132,8 +143,37 @@ SIMPLE_JWT = {
 }
 
 # CORS Configuration
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    'https://apni-dukan-pink.vercel.app',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:3000',
+]
+
+env_cors = os.getenv('CORS_ALLOWED_ORIGINS')
+if env_cors:
+    for origin in env_cors.split(','):
+        origin = origin.strip()
+        if origin and origin not in CORS_ALLOWED_ORIGINS:
+            CORS_ALLOWED_ORIGINS.append(origin)
+
+# CSRF Configuration
+CSRF_TRUSTED_ORIGINS = [
+    'https://apni-dukan-pink.vercel.app',
+    'https://apni-dukan-backend-ee7i.onrender.com',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]
+
+env_csrf = os.getenv('CSRF_TRUSTED_ORIGINS')
+if env_csrf:
+    for origin in env_csrf.split(','):
+        origin = origin.strip()
+        if origin and origin not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(origin)
 
 # DRF Spectacular OpenAPI Settings
 SPECTACULAR_SETTINGS = {
