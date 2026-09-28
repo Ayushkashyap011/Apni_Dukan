@@ -21,7 +21,7 @@ from apps.reviews.models import Review
 User = get_user_model()
 
 def seed():
-    print("[*] Seeding APNI DUKAN database...")
+    print("[*] Seeding APNI DUKAN database with original product images & accessories...")
 
     # 1. Users
     admin_user, _ = User.objects.get_or_create(
@@ -76,7 +76,7 @@ def seed():
     )
     cat_accessories, _ = Category.objects.get_or_create(
         slug='accessories',
-        defaults={'name': 'Accessories', 'description': 'Watches, bags, wallets, sunglasses and footwear'}
+        defaults={'name': 'Accessories', 'description': 'Watches, bags, wallets, sunglasses, belts, caps & footwear'}
     )
 
     sub_tshirts, _ = Subcategory.objects.get_or_create(category=cat_clothing, slug='t-shirts', defaults={'name': 'T-Shirts'})
@@ -89,6 +89,8 @@ def seed():
     sub_bags, _ = Subcategory.objects.get_or_create(category=cat_accessories, slug='bags', defaults={'name': 'Bags & Backpacks'})
     sub_shoes, _ = Subcategory.objects.get_or_create(category=cat_accessories, slug='shoes', defaults={'name': 'Footwear & Sneakers'})
     sub_sunglasses, _ = Subcategory.objects.get_or_create(category=cat_accessories, slug='sunglasses', defaults={'name': 'Sunglasses'})
+    sub_wallets, _ = Subcategory.objects.get_or_create(category=cat_accessories, slug='wallets-belts', defaults={'name': 'Wallets & Belts'})
+    sub_caps, _ = Subcategory.objects.get_or_create(category=cat_accessories, slug='caps-jewelry', defaults={'name': 'Caps & Jewelry'})
 
     print("  [OK] Categories & Subcategories created")
 
@@ -103,6 +105,8 @@ def seed():
         ('Nike', 'nike'),
         ('Manyavar', 'manyavar'),
         ('Urban Style', 'urban-style'),
+        ('Wildcraft', 'wildcraft'),
+        ('Ray-Ban', 'ray-ban'),
     ]
     brand_objs = {}
     for name, slug in brands_data:
@@ -110,39 +114,50 @@ def seed():
         brand_objs[slug] = b
     print("  [OK] Brands created")
 
-    # 4. Products Data
+    # 4. Products Data with Original Image URLs
+    Product.objects.all().delete()
     products_data = [
+        # Clothing
         {
-            'name': 'Premium Oversized Crew Neck T-Shirt',
-            'slug': 'premium-oversized-crew-neck-tshirt',
+            'name': 'Premium Heavyweight Graphic Oversized T-Shirt',
+            'slug': 'premium-heavyweight-graphic-oversized-tshirt',
             'brand': brand_objs['urban-style'],
             'category': cat_clothing,
             'subcategory': sub_tshirts,
             'price': Decimal('1499.00'),
             'discount_price': Decimal('799.00'),
             'sku': 'TS-OVS-001',
-            'short_description': '100% Heavyweight combed cotton graphic t-shirt with modern relaxed fit.',
-            'description': 'Elevate your street fashion with this premium oversized crew neck t-shirt. Crafted from 240 GSM bio-washed cotton, offering breathability and unmatched comfort.',
+            'short_description': '240 GSM bio-washed heavyweight combed cotton graphic t-shirt.',
+            'description': 'Elevate your street fashion with this premium oversized crew neck t-shirt. Crafted from heavyweight combed cotton offering breathability and unmatched comfort.',
             'is_featured': True,
             'stock_quantity': 45,
+            'images': [
+                'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800',
+                'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=800',
+                'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800'
+            ],
             'sizes': ['S', 'M', 'L', 'XL'],
             'colors': ['Black', 'White', 'Olive Green']
         },
         {
-            'name': 'Slim Fit Checked Casual Cotton Shirt',
-            'slug': 'slim-fit-checked-casual-cotton-shirt',
+            'name': 'Slim Fit Oxford Cotton Casual Shirt',
+            'slug': 'slim-fit-oxford-cotton-casual-shirt',
             'brand': brand_objs['roadster'],
             'category': cat_clothing,
             'subcategory': sub_shirts,
             'price': Decimal('2499.00'),
             'discount_price': Decimal('1299.00'),
             'sku': 'SH-CHK-002',
-            'short_description': 'Classic plaid casual shirt crafted from soft breathable pure cotton fabric.',
-            'description': 'Designed for versatile styling, this casual button-down shirt transitions seamlessly from weekend hangouts to smart-casual office days.',
+            'short_description': 'Classic Oxford weave casual button-down shirt.',
+            'description': 'Designed for versatile styling, this casual Oxford shirt transitions seamlessly from weekend hangouts to smart-casual office days.',
             'is_featured': True,
             'stock_quantity': 30,
+            'images': [
+                'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800',
+                'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800'
+            ],
             'sizes': ['M', 'L', 'XL'],
-            'colors': ['Navy Blue', 'Maroon']
+            'colors': ['Sky Blue', 'White']
         },
         {
             'name': '501 Original Fit Dark Indigo Jeans',
@@ -153,16 +168,20 @@ def seed():
             'price': Decimal('3999.00'),
             'discount_price': Decimal('2799.00'),
             'sku': 'JN-LEV-501',
-            'short_description': 'Timeless dark indigo denim jeans with classic straight leg and button fly.',
+            'short_description': 'Timeless dark indigo denim jeans with classic straight leg.',
             'description': 'The original blue jean since 1873. Features durable heavy denim with authentic copper rivets and subtle stretch for all-day comfort.',
             'is_featured': True,
             'stock_quantity': 25,
+            'images': [
+                'https://images.unsplash.com/photo-1542272604-780c36856842?w=800',
+                'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800'
+            ],
             'sizes': ['30', '32', '34', '36'],
             'colors': ['Dark Indigo', 'Washed Black']
         },
         {
-            'name': 'Fleece Lined Pullover Streetwear Hoodie',
-            'slug': 'fleece-lined-pullover-streetwear-hoodie',
+            'name': 'Streetwear Fleece Pullover Hoodie',
+            'slug': 'streetwear-fleece-pullover-hoodie',
             'brand': brand_objs['puma'],
             'category': cat_clothing,
             'subcategory': sub_hoodies,
@@ -173,6 +192,10 @@ def seed():
             'description': 'Stay warm in bold urban style with this fleece lined pullover hoodie. Features an adjustable drawstring hood and durable ribbing.',
             'is_featured': True,
             'stock_quantity': 20,
+            'images': [
+                'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800',
+                'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?w=800'
+            ],
             'sizes': ['M', 'L', 'XL'],
             'colors': ['Charcoal Grey', 'Jet Black']
         },
@@ -185,64 +208,203 @@ def seed():
             'price': Decimal('4999.00'),
             'discount_price': Decimal('3499.00'),
             'sku': 'KR-MAN-005',
-            'short_description': 'Rich cotton silk ethnic kurta with delicate neck embroidery for festive occasions.',
+            'short_description': 'Rich cotton silk ethnic kurta with neck embroidery.',
             'description': 'Embrace traditional elegance with this royal embroidered silk blend kurta. Paired effortlessly with churidars or denim.',
             'is_featured': True,
             'stock_quantity': 15,
+            'images': [
+                'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800',
+                'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=800'
+            ],
             'sizes': ['M', 'L', 'XL', 'XXL'],
             'colors': ['Royal Blue', 'Cream Silk']
         },
         {
-            'name': 'Minimalist Chronograph Leather Watch',
-            'slug': 'minimalist-chronograph-leather-watch',
+            'name': 'Waterproof Insulated Puffer Winter Jacket',
+            'slug': 'waterproof-insulated-puffer-winter-jacket',
+            'brand': brand_objs['puma'],
+            'category': cat_clothing,
+            'subcategory': sub_hoodies,
+            'price': Decimal('5999.00'),
+            'discount_price': Decimal('3999.00'),
+            'sku': 'JKT-PUM-006',
+            'short_description': 'Windproof down insulated puffer jacket with detachable hood.',
+            'description': 'Beat the winter cold with high-loft insulation and water-repellent shell material.',
+            'is_featured': False,
+            'stock_quantity': 18,
+            'images': [
+                'https://images.unsplash.com/photo-1544441893-675973e31985?w=800',
+                'https://images.unsplash.com/photo-1548883354-7622d03aca27?w=800'
+            ],
+            'sizes': ['M', 'L', 'XL'],
+            'colors': ['Matte Black', 'Navy Blue']
+        },
+
+        # Accessories
+        {
+            'name': 'Minimalist Quartz Chronograph Leather Watch',
+            'slug': 'minimalist-quartz-chronograph-leather-watch',
             'brand': brand_objs['titan'],
             'category': cat_accessories,
             'subcategory': sub_watches,
             'price': Decimal('6995.00'),
             'discount_price': Decimal('4495.00'),
-            'sku': 'WT-TTN-006',
-            'short_description': 'Sleek stainless steel quartz watch with genuine brown leather strap.',
+            'sku': 'WT-TTN-007',
+            'short_description': 'Stainless steel quartz watch with genuine leather strap.',
             'description': 'Features a mineral glass crystal dial, 50m water resistance, and Japanese quartz movement for sophisticated timekeeping.',
             'is_featured': True,
             'stock_quantity': 12,
+            'images': [
+                'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800',
+                'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=800'
+            ],
             'sizes': ['Free Size'],
             'colors': ['Tan Brown / Silver Dial']
         },
         {
-            'name': 'Air Max Retro Running Sneakers',
-            'slug': 'air-max-retro-running-sneakers',
+            'name': 'Premium Genuine Leather Bifold Wallet',
+            'slug': 'premium-genuine-leather-bifold-wallet',
+            'brand': brand_objs['roadster'],
+            'category': cat_accessories,
+            'subcategory': sub_wallets,
+            'price': Decimal('1999.00'),
+            'discount_price': Decimal('999.00'),
+            'sku': 'WLT-RDS-008',
+            'short_description': 'Full-grain RFID blocking leather wallet with coin pocket.',
+            'description': 'Handcrafted from 100% genuine top-grain leather with dedicated card slots and RFID protection.',
+            'is_featured': True,
+            'stock_quantity': 35,
+            'images': [
+                'https://images.unsplash.com/photo-1627123424574-724758594e93?w=800',
+                'https://images.unsplash.com/photo-1606503825008-909a67e72390?w=800'
+            ],
+            'sizes': ['Standard'],
+            'colors': ['Vintage Brown', 'Classic Black']
+        },
+        {
+            'name': 'Classic Reversible Italian Leather Belt',
+            'slug': 'classic-reversible-italian-leather-belt',
+            'brand': brand_objs['allen-solly'],
+            'category': cat_accessories,
+            'subcategory': sub_wallets,
+            'price': Decimal('2299.00'),
+            'discount_price': Decimal('1199.00'),
+            'sku': 'BLT-ALL-009',
+            'short_description': 'Dual-sided black & tan leather belt with swivel metal buckle.',
+            'description': 'Twist-buckle mechanism allows easy switching between formal black and casual tan leather sides.',
+            'is_featured': False,
+            'stock_quantity': 28,
+            'images': [
+                'https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=800',
+                'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=800'
+            ],
+            'sizes': ['32', '34', '36', '38'],
+            'colors': ['Black & Tan Dual']
+        },
+        {
+            'name': 'Aviator UV400 Polarized Sunglasses',
+            'slug': 'aviator-uv400-polarized-sunglasses',
+            'brand': brand_objs['ray-ban'],
+            'category': cat_accessories,
+            'subcategory': sub_sunglasses,
+            'price': Decimal('5490.00'),
+            'discount_price': Decimal('3490.00'),
+            'sku': 'SUN-RAY-010',
+            'short_description': 'Classic metal frame aviators with G-15 green polarized lenses.',
+            'description': 'Protect your eyes with 100% UV400 anti-glare polarized lenses set in a lightweight metal frame.',
+            'is_featured': True,
+            'stock_quantity': 22,
+            'images': [
+                'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=800',
+                'https://images.unsplash.com/photo-1508296695146-257a814070b4?w=800'
+            ],
+            'sizes': ['Medium'],
+            'colors': ['Gold Frame / Green Lens']
+        },
+        {
+            'name': 'Urban Utility Canvas Laptop Backpack',
+            'slug': 'urban-utility-canvas-laptop-backpack',
+            'brand': brand_objs['wildcraft'],
+            'category': cat_accessories,
+            'subcategory': sub_bags,
+            'price': Decimal('2999.00'),
+            'discount_price': Decimal('1499.00'),
+            'sku': 'BG-WLD-011',
+            'short_description': '25L water-resistant backpack with padded 15.6" laptop compartment.',
+            'description': 'Built for commuters and outdoor enthusiasts. Features rain cover and ergonomic back padding.',
+            'is_featured': False,
+            'stock_quantity': 40,
+            'images': [
+                'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800',
+                'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=800'
+            ],
+            'sizes': ['25 Liters'],
+            'colors': ['Olive Drab', 'Charcoal Black']
+        },
+        {
+            'name': 'Air Cushion Retro Running Sneakers',
+            'slug': 'air-cushion-retro-running-sneakers',
             'brand': brand_objs['nike'],
             'category': cat_accessories,
             'subcategory': sub_shoes,
             'price': Decimal('8995.00'),
             'discount_price': Decimal('6495.00'),
-            'sku': 'SNK-NKE-007',
-            'short_description': 'High-cushion responsive running shoes with breathable mesh upper.',
-            'description': 'Experience responsive cushioning with every stride. Engineered mesh upper keeps feet cool during workout and casual wear.',
+            'sku': 'SNK-NKE-012',
+            'short_description': 'Responsive running sneakers with breathable knit mesh upper.',
+            'description': 'Delivers exceptional impact absorption and retro streetwear design for all-day comfort.',
             'is_featured': True,
             'stock_quantity': 18,
+            'images': [
+                'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800',
+                'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=800'
+            ],
             'sizes': ['UK 7', 'UK 8', 'UK 9', 'UK 10'],
             'colors': ['White / Cobalt Blue', 'Black / Metallic Grey']
         },
         {
-            'name': 'Urban Utility Canvas Laptop Backpack',
-            'slug': 'urban-utility-canvas-laptop-backpack',
-            'brand': brand_objs['roadster'],
+            'name': 'Embroidered Cotton Athletic Cap',
+            'slug': 'embroidered-cotton-athletic-cap',
+            'brand': brand_objs['puma'],
             'category': cat_accessories,
-            'subcategory': sub_bags,
-            'price': Decimal('2999.00'),
-            'discount_price': Decimal('1499.00'),
-            'sku': 'BG-RDS-008',
-            'short_description': 'Durable water-resistant 25L canvas backpack with padded 15.6" laptop sleeve.',
-            'description': 'Built for commuters and travelers alike. Features multiple organizational pockets and ergonomic padded shoulder straps.',
+            'subcategory': sub_caps,
+            'price': Decimal('1299.00'),
+            'discount_price': Decimal('699.00'),
+            'sku': 'CAP-PUM-013',
+            'short_description': 'Adjustable 6-panel cotton twill sports baseball cap.',
+            'description': 'Features 3D embroidered logo, moisture-wicking sweatband, and adjustable metal strap closure.',
             'is_featured': False,
-            'stock_quantity': 40,
-            'sizes': ['25 Liters'],
-            'colors': ['Olive Drab', 'Midnight Navy']
+            'stock_quantity': 50,
+            'images': [
+                'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=800',
+                'https://images.unsplash.com/photo-1575428652377-a2d80e2277fc?w=800'
+            ],
+            'sizes': ['Adjustable Free Size'],
+            'colors': ['Navy Blue', 'Jet Black']
+        },
+        {
+            'name': 'Minimalist Stainless Steel Chain Bracelet',
+            'slug': 'minimalist-stainless-steel-chain-bracelet',
+            'brand': brand_objs['urban-style'],
+            'category': cat_accessories,
+            'subcategory': sub_caps,
+            'price': Decimal('1499.00'),
+            'discount_price': Decimal('799.00'),
+            'sku': 'JWL-URB-014',
+            'short_description': 'Hypoallergenic Cuban link stainless steel bracelet.',
+            'description': 'Tarnish-free 316L stainless steel chain link bracelet designed for daily wear.',
+            'is_featured': False,
+            'stock_quantity': 30,
+            'images': [
+                'https://images.unsplash.com/photo-1611591475777-233ca732222e?w=800',
+                'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800'
+            ],
+            'sizes': ['8 Inches'],
+            'colors': ['Polished Silver']
         }
     ]
 
     for p_data in products_data:
+        images_list = p_data.pop('images')
         sizes = p_data.pop('sizes')
         colors = p_data.pop('colors')
 
@@ -251,25 +413,33 @@ def seed():
             defaults=p_data
         )
 
-        if created:
-            # Create Variants
-            for sz in sizes:
-                for clr in colors:
-                    v_sku = f"{product.sku}-{sz}-{clr[:3].upper()}"
-                    ProductVariant.objects.get_or_create(
-                        product=product,
-                        sku=v_sku,
-                        defaults={
-                            'name': f"Size {sz} / {clr}",
-                            'size': sz,
-                            'color': clr,
-                            'stock_quantity': 10,
-                            'price': product.price,
-                            'discount_price': product.discount_price
-                        }
-                    )
+        # Update images and variants
+        ProductImage.objects.filter(product=product).delete()
+        for idx, img_url in enumerate(images_list):
+            ProductImage.objects.create(
+                product=product,
+                image=img_url,
+                is_primary=(idx == 0),
+                display_order=idx
+            )
 
-    print("  [OK] Products & Variants created")
+        for sz in sizes:
+            for clr in colors:
+                v_sku = f"{product.sku}-{sz}-{clr[:3].upper()}"
+                ProductVariant.objects.get_or_create(
+                    product=product,
+                    sku=v_sku,
+                    defaults={
+                        'name': f"Size {sz} / {clr}",
+                        'size': sz,
+                        'color': clr,
+                        'stock_quantity': 10,
+                        'price': product.price,
+                        'discount_price': product.discount_price
+                    }
+                )
+
+    print("  [OK] Products, Gallery Images & Variants created")
 
     # 5. Coupons
     now = timezone.now()
