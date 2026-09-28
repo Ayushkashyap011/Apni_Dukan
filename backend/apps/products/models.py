@@ -6,7 +6,7 @@ from apps.categories.models import Category, Subcategory
 class Brand(BaseModel):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=120, unique=True, db_index=True)
-    logo = models.ImageField(upload_to='brands/', blank=True, null=True)
+    logo = models.CharField(max_length=500, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
@@ -78,7 +78,7 @@ class ProductVariant(BaseModel):
 
 class ProductImage(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='products/')
+    image = models.CharField(max_length=500)
     alt_text = models.CharField(max_length=200, blank=True, null=True)
     is_primary = models.BooleanField(default=False)
     display_order = models.PositiveIntegerField(default=0)

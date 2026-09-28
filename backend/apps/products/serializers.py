@@ -8,9 +8,20 @@ class BrandSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'slug', 'logo', 'description', 'is_active']
 
 class ProductImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = ProductImage
         fields = ['id', 'image', 'alt_text', 'is_primary', 'display_order']
+
+    def get_image(self, obj):
+        img_str = str(obj.image)
+        if img_str.startswith('http://') or img_str.startswith('https://'):
+            return img_str
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(img_str)
+        return img_str
 
 class ProductVariantSerializer(serializers.ModelSerializer):
     effective_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
@@ -38,12 +49,15 @@ class ProductListSerializer(serializers.ModelSerializer):
         ]
 
     def get_primary_image(self, obj):
-        image = obj.images.filter(is_primary=True).first() or obj.images.first()
-        if image:
+        image_obj = obj.images.filter(is_primary=True).first() or obj.images.first()
+        if image_obj:
+            img_str = str(image_obj.image)
+            if img_str.startswith('http://') or img_str.startswith('https://'):
+                return img_str
             request = self.context.get('request')
             if request:
-                return request.build_absolute_uri(image.image.url)
-            return image.image.url
+                return request.build_absolute_uri(img_str)
+            return img_str
         return None
 
 class ProductDetailSerializer(ProductListSerializer):
