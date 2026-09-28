@@ -6,8 +6,8 @@ export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, isLoading } = useAuthStore();
 
-  const [email, setEmail] = useState('customer@apnidukan.com');
-  const [password, setPassword] = useState('Customer@123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,6 +57,7 @@ export const LoginPage: React.FC = () => {
           <input
             type="email"
             required
+            placeholder="enter your email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full border border-slate-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500"
@@ -68,6 +69,7 @@ export const LoginPage: React.FC = () => {
           <input
             type="password"
             required
+            placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full border border-slate-200 rounded-xl p-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500"
